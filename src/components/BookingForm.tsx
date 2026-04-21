@@ -1,6 +1,28 @@
 "use client";
 
+import { useState } from "react";
+
 export default function BookingForm() {
+  const [form, setForm] = useState({ name: "", email: "", phone: "", serviceType: "Residential Cleaning", preferredDate: "" });
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus("loading");
+
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(form),
+    });
+
+    setStatus(res.ok ? "success" : "error");
+  };
+
   return (
     <section id="booking" className="bg-gray-100 py-20 px-6">
       <div className="max-w-6xl mx-auto">
@@ -33,51 +55,97 @@ export default function BookingForm() {
 
           {/* Right form */}
           <div className="flex-1 p-14">
-            <form className="space-y-7">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Full Name</label>
-                  <input
-                    type="text"
-                    placeholder="John Doe"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
-                  />
+            {status === "success" ? (
+              <div className="h-full flex flex-col items-center justify-center text-center gap-4">
+                <div className="w-14 h-14 rounded-full bg-[#5c6b2e] flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Email Address</label>
-                  <input
-                    type="email"
-                    placeholder="john@example.com"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
-                  />
-                </div>
+                <h3 className="text-xl font-bold text-[#1a3a5c]">Request Sent!</h3>
+                <p className="text-gray-500 text-sm">We'll confirm your appointment within 2 hours.</p>
+                <button onClick={() => setStatus("idle")} className="text-sm text-[#4ecdc4] hover:underline mt-2">Submit another request</button>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-gray-600 mb-1.5">Service Type</label>
-                  <select className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4] bg-white appearance-none">
-                    <option>Residential Cleaning</option>
-                    <option>Commercial Cleaning</option>
-                    <option>Outdoor Cleaning</option>
-                  </select>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-7">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Full Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={form.name}
+                      onChange={handleChange}
+                      placeholder="John Doe"
+                      required
+                      className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Email Address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={form.email}
+                      onChange={handleChange}
+                      placeholder="john@example.com"
+                      required
+                      className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+                    />
+                  </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Phone Number</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={form.phone}
+                      onChange={handleChange}
+                      placeholder="(813) 000-0000"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-600 mb-1.5">Service Type</label>
+                    <select
+                      name="serviceType"
+                      value={form.serviceType}
+                      onChange={handleChange}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4] bg-white appearance-none"
+                    >
+                      <option>Residential Cleaning</option>
+                      <option>Commercial Cleaning</option>
+                      <option>Outdoor Cleaning</option>
+                    </select>
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">Preferred Date</label>
                   <input
                     type="date"
+                    name="preferredDate"
+                    value={form.preferredDate}
+                    onChange={handleChange}
                     className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                   />
                 </div>
-              </div>
 
-              <button
-                type="submit"
-                className="w-full bg-[#5c6b2e] hover:bg-[#4a5524] text-white font-bold py-4 rounded-full text-sm transition-colors mt-2"
-              >
-                Submit Request
-              </button>
-            </form>
+                {status === "error" && (
+                  <p className="text-red-500 text-sm">Something went wrong. Please try again or call us directly.</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={status === "loading"}
+                  className="w-full bg-[#5c6b2e] hover:bg-[#4a5524] disabled:opacity-60 text-white font-bold py-4 rounded-full text-sm transition-colors mt-2"
+                >
+                  {status === "loading" ? "Sending..." : "Submit Request"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
