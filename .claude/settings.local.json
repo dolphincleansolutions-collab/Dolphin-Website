@@ -5,7 +5,9 @@
       "Bash(npx tsc *)",
       "WebSearch",
       "WebFetch(domain:unsplash.com)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(node -e \"console.log\\(require\\('./node_modules/react-day-picker/package.json'\\).version\\)\")",
+      "Bash(npm uninstall *)"
     ]
   }
 }

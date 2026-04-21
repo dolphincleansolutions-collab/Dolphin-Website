@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import DatePicker from "./DatePicker";
 
 export default function BookingForm() {
   const [form, setForm] = useState({ name: "", email: "", phone: "", serviceType: "Residential Cleaning", preferredDate: "" });
@@ -26,9 +27,9 @@ export default function BookingForm() {
   return (
     <section id="booking" className="bg-gray-100 py-20 px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-white rounded-3xl shadow-sm overflow-hidden flex flex-col md:flex-row">
+        <div className="bg-white rounded-3xl shadow-sm flex flex-col md:flex-row">
           {/* Left info panel */}
-          <div className="bg-[#1a3a5c] text-white p-14 md:w-80 flex-shrink-0 flex flex-col justify-between">
+          <div className="bg-[#1a3a5c] text-white p-14 md:w-80 flex-shrink-0 flex flex-col justify-between rounded-t-3xl md:rounded-l-3xl md:rounded-tr-none">
             <div>
               <h2 className="text-3xl font-extrabold leading-tight mb-4">
                 Book Your<br />Session
@@ -89,7 +90,6 @@ export default function BookingForm() {
                       value={form.email}
                       onChange={handleChange}
                       placeholder="john@example.com"
-                      required
                       className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                     />
                   </div>
@@ -104,32 +104,36 @@ export default function BookingForm() {
                       value={form.phone}
                       onChange={handleChange}
                       placeholder="(813) 000-0000"
+                      required
                       className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
                     />
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-gray-600 mb-1.5">Service Type</label>
-                    <select
-                      name="serviceType"
-                      value={form.serviceType}
-                      onChange={handleChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4] bg-white appearance-none"
-                    >
-                      <option>Residential Cleaning</option>
-                      <option>Commercial Cleaning</option>
-                      <option>Outdoor Cleaning</option>
-                    </select>
+                    <div className="relative">
+                      <select
+                        name="serviceType"
+                        value={form.serviceType}
+                        onChange={handleChange}
+                        required
+                        className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4] bg-white appearance-none pr-10"
+                      >
+                        <option>Residential Cleaning</option>
+                        <option>Commercial Cleaning</option>
+                        <option>Outdoor Cleaning</option>
+                      </select>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
                   </div>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-gray-600 mb-1.5">Preferred Date</label>
-                  <input
-                    type="date"
-                    name="preferredDate"
+                  <DatePicker
                     value={form.preferredDate}
-                    onChange={handleChange}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-4 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-[#4ecdc4]"
+                    onChange={(val) => setForm({ ...form, preferredDate: val })}
                   />
                 </div>
 
